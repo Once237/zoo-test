@@ -1,0 +1,1 @@
+[1,0,0,[["cc.JsonAsset",["_name","json"],1]],[[0,0,1,3]],[[0,"shop",{"items":[{"id":"carrot","name":"胡萝卜","price":5,"rewardType":"carrot","rewardAmount":1},{"id":"petFood","name":"宠物粮","price":20,"rewardType":"petFood","rewardAmount":1}],"sell":[{"id":"carrot","name":"胡萝卜","price":1,"payType":"carrot","payAmount":1}]}]],0,0,[],[],[]]
