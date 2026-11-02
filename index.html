@@ -3,62 +3,153 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Cocos Creator | Game</title>
+  <title>Zoo</title>
 
-  <!--http://www.html5rocks.com/en/mobile/mobifying/-->
   <meta name="viewport"
         content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1,minimal-ui=true"/>
 
-  <!--https://developer.apple.com/library/safari/documentation/AppleApplications/Reference/SafariHTMLRef/Articles/MetaTags.html-->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="format-detection" content="telephone=no">
 
-  <!-- force webkit on 360 -->
   <meta name="renderer" content="webkit"/>
   <meta name="force-rendering" content="webkit"/>
-  <!-- force edge on IE -->
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
   <meta name="msapplication-tap-highlight" content="no">
 
-  <!-- force full screen on some browser -->
   <meta name="full-screen" content="yes"/>
   <meta name="x5-fullscreen" content="true"/>
   <meta name="360-fullscreen" content="true"/>
-
-  <!--fix fireball/issues/3568 -->
-  <!--<meta name="browsermode" content="application">-->
   <meta name="x5-page-mode" content="app">
 
-  <!--<link rel="apple-touch-icon" href=".png" />-->
-  <!--<link rel="apple-touch-icon-precomposed" href=".png" />-->
+  <link rel="stylesheet" type="text/css" href="style.f76d1.css"/>
 
-  <link rel="stylesheet" type="text/css" href="style.css"/>
-
+  <style>
+    /* Boot placeholder shown while the engine loads; hidden by the script below. */
+    html, body { margin: 0; padding: 0; background: #241a17; overflow: hidden; }
+    #cc-loading {
+      position: fixed;
+      left: 0; top: 0; right: 0; bottom: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #241a17;
+      transition: opacity 0.35s ease-out;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    #cc-loading .cc-title {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 26px;
+      letter-spacing: 4px;
+      color: #FAEEDC;
+      text-shadow: 0 2px 0 #3F2631;
+      margin-bottom: 26px;
+    }
+    #cc-loading .cc-track {
+      width: 58vw;
+      max-width: 320px;
+      height: 10px;
+      border-radius: 6px;
+      background: #3F2631;
+      box-shadow: inset 0 2px 0 rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+    #cc-loading .cc-bar {
+      width: 4%;
+      height: 100%;
+      border-radius: 6px;
+      background: #E8A25C;
+      transition: width 0.2s linear;
+    }
+    #cc-loading .cc-tip {
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 13px;
+      color: #C97B3F;
+      margin-top: 14px;
+      letter-spacing: 1px;
+    }
+  </style>
 </head>
 <body>
   <div id="GameDiv" cc_exact_fit_screen="true">
-      <div id="Cocos3dGameContainer">
-        <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
-      </div>
+    <div id="Cocos3dGameContainer">
+      <canvas id="GameCanvas" oncontextmenu="event.preventDefault()" tabindex="99"></canvas>
     </div>
-  
+  </div>
 
-<!-- Polyfills bundle. -->
+  <div id="cc-loading">
+    <div class="cc-title" id="cc-title"></div>
+    <div class="cc-track"><div class="cc-bar" id="cc-loading-bar"></div></div>
+    <div class="cc-tip" id="cc-tip"></div>
+  </div>
 
-<script src="src/polyfills.bundle.js" charset="utf-8"> </script>
+  <!-- Polyfills bundle. -->
+  <script src="src/polyfills.bundle.5adbf.js" charset="utf-8"> </script>
 
+  <!-- SystemJS support. -->
+  <script src="src/system.bundle.543e6.js" charset="utf-8"> </script>
 
-<!-- SystemJS support. -->
-<script src="src/system.bundle.js" charset="utf-8"> </script>
+  <!-- Import map. The placeholder below is replaced by deploy-ghpages.ps1 with the
+       real src/import-map*.json content (engine file names carry a hash with MD5 cache). -->
+  <script type="systemjs-importmap">
+{"imports":{"cc":"./cocos-js/cc.74460.js"}}
+  </script>
 
-<!-- Import map -->
-<script src="src/import-map.json" type="systemjs-importmap" charset="utf-8"> </script>
+  <script>
+    // Keep this file pure ASCII: Cocos Creator reads build templates as GBK on
+    // Chinese Windows, so non-ASCII literals would be mangled during the build.
+    document.title = '\u517b\u4e86\u4e2a\u52a8\u7269\u56ed';
+    document.getElementById('cc-title').textContent = '\u517b\u4e86\u4e2a\u52a8\u7269\u56ed';
+    document.getElementById('cc-tip').textContent = '\u52a0\u8f7d\u4e2d\u2026';
 
-<script>
-    System.import('./index.js').catch(function(err) { console.error(err); })
-</script>
+    (function () {
+      var wrap = document.getElementById('cc-loading');
+      var bar = document.getElementById('cc-loading-bar');
+      var pct = 4;
+      var hidden = false;
+
+      var grow = setInterval(function () {
+        // Fake progress: slows down as it approaches 92% so it never looks stuck.
+        var step = Math.max(1.5, (92 - pct) * 0.06);
+        pct = Math.min(pct + step, 92);
+        if (bar) bar.style.width = pct.toFixed(1) + '%';
+      }, 180);
+
+      function hide() {
+        if (hidden) return;
+        hidden = true;
+        clearInterval(grow);
+        if (bar) bar.style.width = '100%';
+        setTimeout(function () {
+          if (!wrap) return;
+          wrap.style.opacity = '0';
+          setTimeout(function () { wrap.style.display = 'none'; }, 380);
+        }, 200);
+      }
+
+      // Hide once the scene is actually running (director has a scene and game is ticking).
+      var watch = setInterval(function () {
+        try {
+          var cc = window.cc;
+          if (cc && cc.game && cc.director && cc.director.getScene() && cc.game.frameRate) {
+            clearInterval(watch);
+            setTimeout(hide, 260);
+          }
+        } catch (e) { /* engine not ready yet */ }
+      }, 120);
+
+      // Safety net: never block the canvas forever.
+      setTimeout(hide, 20000);
+    })();
+  </script>
+
+  <script>
+    System.import('./index.daeaf.js').catch(function(err) { console.error(err); });
+  </script>
 
 </body>
 </html>
